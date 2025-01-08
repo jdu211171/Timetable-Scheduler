@@ -4,11 +4,14 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useLoaderData,
 } from '@remix-run/react'
-import type { LinksFunction } from '@remix-run/node'
-
+import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import './tailwind.css'
-import React from 'react'
+import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from 'remix-themes'
+import { themeSessionResolver } from '~/services/theme.server'
+import { SidebarProvider } from '~/components/ui/sidebar'
+import { Toaster } from '~/components/ui/toaster'
 
 export const links: LinksFunction = () => [
 	{ rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -23,25 +26,44 @@ export const links: LinksFunction = () => [
 	},
 ]
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export async function loader({ request }: LoaderFunctionArgs) {
+	const { getTheme } = await themeSessionResolver(request)
+	return {
+		theme: getTheme(),
+	}
+}
+
+export default function AppWithProviders() {
+	const data = useLoaderData<typeof loader>()
+
 	return (
-		<html lang='en'>
-			<head>
-				<meta charSet='utf-8' />
-				<meta name='viewport' content='width=device-width, initial-scale=1' />
-				<Meta />
-				<Links />
-				<title>Timetable Scheduler</title>
-			</head>
-			<body>
-				{children}
-				<ScrollRestoration />
-				<Scripts />
-			</body>
-		</html>
+		<ThemeProvider specifiedTheme={data.theme} themeAction='/action/set-theme'>
+			<App />
+		</ThemeProvider>
 	)
 }
 
-export default function App() {
-	return <Outlet />
+function App() {
+	const data = useLoaderData<typeof loader>()
+	const [theme] = useTheme()
+
+	return (
+		<html lang='en' className={`${theme} h-full`} suppressHydrationWarning>
+			<head>
+				<meta charSet='utf-8' />
+				<meta name='viewport' content='width=device-width,initial-scale=1' />
+				<Meta />
+				<PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
+				<Links />
+			</head>
+			<body className='min-h-screen bg-background font-sans antialiased'>
+				<SidebarProvider>
+					<Outlet />
+				</SidebarProvider>
+				<ScrollRestoration />
+				<Scripts />
+				<Toaster />
+			</body>
+		</html>
+	)
 }
