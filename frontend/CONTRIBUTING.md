@@ -98,8 +98,10 @@
 
 1. **lint-staged** runs Prettier and ESLint on staged files.
 2. If issues are found:
-  - **Prettier** auto-formats files.
-  - **ESLint** attempts to auto-fix issues (if possible).
+
+- **Prettier** auto-formats files.
+- **ESLint** attempts to auto-fix issues (if possible).
+
 3. Files are re-staged if modified.
 4. If unfixable errors remain, the commit is aborted, and you must address the issues before committing.
 
@@ -144,34 +146,34 @@
 
 1. **Coding:**
 
-  - **Editor Tools Active:** As you code, Prettier formats your code on save, ESLint highlights issues, and EditorConfig enforces style settings.
+- **Editor Tools Active:** As you code, Prettier formats your code on save, ESLint highlights issues, and EditorConfig enforces style settings.
 
 2. **Reviewing Code:**
 
-  - **Address ESLint Warnings/Errors:** Fix any linting issues highlighted in your editor.
-  - **Ensure Code is Formatted:** Confirm code is properly formatted (usually automatic if format on save is enabled).
+- **Address ESLint Warnings/Errors:** Fix any linting issues highlighted in your editor.
+- **Ensure Code is Formatted:** Confirm code is properly formatted (usually automatic if format on save is enabled).
 
 3. **Committing Changes:**
 
-  - **Stage Files:** `git add .`
-  - **Attempt to Commit:** `git commit -m "Your commit message"`
-    - **Pre-Commit Hook Runs:**
-      - Formats code and fixes linting issues if possible.
-      - Aborts commit if there are unfixable errors, prompting you to fix them.
+- **Stage Files:** `git add .`
+- **Attempt to Commit:** `git commit -m "Your commit message"`
+  - **Pre-Commit Hook Runs:**
+    - Formats code and fixes linting issues if possible.
+    - Aborts commit if there are unfixable errors, prompting you to fix them.
 
 4. **Pushing Code:**
 
-  - **Push to Remote Repository:** `git push`
-  - **CI Pipeline Runs:**
-    - Executes linting and formatting checks.
-    - Runs tests.
-    - Fails the build if checks do not pass.
+- **Push to Remote Repository:** `git push`
+- **CI Pipeline Runs:**
+  - Executes linting and formatting checks.
+  - Runs tests.
+  - Fails the build if checks do not pass.
 
 5. **Code Review and Merge:**
 
-  - **Pull Requests:**
-    - Code is reviewed by team members.
-    - Ensures code quality before merging.
+- **Pull Requests:**
+  - Code is reviewed by team members.
+  - Ensures code quality before merging.
 
 ---
 
