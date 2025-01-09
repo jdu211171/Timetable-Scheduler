@@ -1,8 +1,13 @@
 import { Button } from '~/components/ui/button'
-import { NavLink } from '@remix-run/react'
+import { Link, NavLink } from '@remix-run/react'
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
-import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet'
+import {
+	Sheet,
+	SheetContent,
+	SheetTitle,
+	SheetTrigger,
+} from '~/components/ui/sheet'
 import { ToggleTheme } from '~/components/toggle-theme'
 import { Footer } from '~/components/footer'
 
@@ -11,7 +16,7 @@ export function meta() {
 		{ title: 'TimeTable Management System' },
 		{
 			description:
-				'Efficient library resource management system for students and librarians',
+				'Efficient resource management system for schools and institutions.',
 		},
 	]
 }
@@ -35,18 +40,18 @@ export default function Index() {
 							<SheetTrigger asChild>
 								<Button variant='ghost' size='icon' className='md:hidden'>
 									<Menu className='h-5 w-5' />
-									<span className='sr-only'>Toggle menu</span>
+									<SheetTitle className='sr-only'>Toggle menu</SheetTitle>
 								</Button>
 							</SheetTrigger>
 							<SheetContent side='right' className='w-[240px] sm:w-[300px]'>
 								<nav className='flex flex-col space-y-4 mt-6'>
 									<Button
 										asChild
-										variant='ghost'
+										variant='outline'
 										className='justify-start'
 										onClick={() => setIsOpen(false)}
 									>
-										<NavLink to='/librarian'>Librarian Portal</NavLink>
+										<NavLink to='/admin'>Login</NavLink>
 									</Button>
 								</nav>
 							</SheetContent>

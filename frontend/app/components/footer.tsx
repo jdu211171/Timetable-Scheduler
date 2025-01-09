@@ -15,7 +15,7 @@ export function Footer() {
 				>
 					<span>Built by</span>
 					<img
-						src={theme === 'dark' ? '/bslight.png' : '/bsdark.png'}
+						src={theme === 'light' ? '/bsdark.png' : '/bslight.png'}
 						alt='Byte Synergy Co.'
 						className='h-8'
 					/>
