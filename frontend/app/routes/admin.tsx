@@ -4,7 +4,7 @@ import { AppSidebar } from '~/components/app-sidebar'
 import { SidebarInset, SidebarTrigger } from '~/components/ui/sidebar'
 import { Separator } from '~/components/ui/separator'
 import { ToggleTheme } from '~/components/toggle-theme'
-import { requireLibrarianUser } from '~/services/auth.server'
+import { requireUser } from '~/services/auth.server'
 import { DynamicBreadcrumb } from '~/components/breadcrumb'
 
 export function meta() {
@@ -12,7 +12,7 @@ export function meta() {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const { user } = await requireLibrarianUser(request)
+	const { user } = await requireUser(request)
 	return { user }
 }
 
@@ -23,7 +23,7 @@ export default function LibrarianLayout() {
 		<div className='flex min-h-screen w-full'>
 			<AppSidebar user={user} />
 			<SidebarInset className='flex-1 grow'>
-				<header className='sticky top-0 z-10 flex h-16 w-full shrink-0 items-center justify-between border-b bg-background px-4'>
+				<header className='sticky top-0 z-10 flex h-12 w-full shrink-0 items-center justify-between border-b bg-background px-4'>
 					<div className='flex items-center gap-2'>
 						<SidebarTrigger className='-ml-2' />
 						<Separator orientation='vertical' className='h-4' />

@@ -1,3 +1,16 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ActionFunctionArgs } from '@remix-run/node'
+import {
+	Form,
+	json,
+	Link,
+	useActionData,
+	useNavigate,
+	useNavigation,
+} from '@remix-run/react'
+import { isAxiosError } from 'axios'
+import { ArrowLeft } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 import { Button } from '~/components/ui/button'
 import {
 	Card,
@@ -8,59 +21,74 @@ import {
 } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { Form, Link, useNavigate, useNavigation } from '@remix-run/react'
-import { ArrowLeft } from 'lucide-react'
+import { createUserSession } from '~/services/auth.server'
+import { LoginFormData, loginSchema } from '~/types/auth'
 
 export function meta() {
 	return [{ title: 'Login' }, { description: 'Login to your account' }]
 }
 
-// export async function action({ request }: ActionFunctionArgs) {
-// 	const formData = await request.formData()
-// 	const loginID = formData.get('loginID')
-// 	const password = formData.get('password')
+export async function action({ request }: ActionFunctionArgs) {
+	const formData = await request.formData()
+	const email = formData.get('email')
+	const password = formData.get('password')
 
-// 	if (!loginID || !password) {
-// 		return json(
-// 			{ error: 'Please enter your login ID and password' },
-// 			{ status: 400 }
-// 		)
-// 	}
+	if (!email || !password) {
+		return json(
+			{ error: 'Please enter your email and password' },
+			{ status: 400 }
+		)
+	}
 
-// 	try {
-// 		const response = await api.post<SessionData>('/login', {
-// 			loginID,
-// 			password,
-// 		})
+	try {
+		// const response = await api.post<SessionData>('/login', {
+		// 	email,
+		// 	password,
+		// })
+		if (email !== 'admin' || password !== 'admin') {
+			return json({ error: 'Invalid credentials' }, { status: 400 })
+		}
 
-// 		const { token, user } = response.data
-// 		return createUserSession(token, user)
-// 	} catch (error) {
-// 		if (isAxiosError(error)) {
-// 			return json(
-// 				{ error: error.response?.data?.message || 'Invalid credentials' },
-// 				{ status: 400 }
-// 			)
-// 		}
-// 		return json({ error: 'Login failed' }, { status: 500 })
-// 	}
-// }
+		const response = {
+			data: {
+				token: 'token',
+				user: {
+					id: 1,
+					email: 'admin@example.com',
+					name: 'Admin User',
+					role: 'admin',
+				},
+			},
+		}
+
+		const { token, user } = response.data
+		return createUserSession(token, user)
+	} catch (error) {
+		if (isAxiosError(error)) {
+			return json(
+				{ error: error.response?.data?.message || 'Invalid credentials' },
+				{ status: 400 }
+			)
+		}
+		return json({ error: 'Login failed' }, { status: 500 })
+	}
+}
 
 export default function LoginPage() {
-	// const actionData = useActionData() as { error?: string }
+	const actionData = useActionData() as { error?: string }
 	const navigation = useNavigation()
 	const navigate = useNavigate()
 	const isSubmitting = navigation.state === 'submitting'
-	// const {
-	// 	register,
-	// 	formState: { errors },
-	// } = useForm<LoginFormData>({
-	// 	resolver: zodResolver(loginSchema),
-	// 	defaultValues: {
-	// 		loginID: '',
-	// 		password: '',
-	// 	},
-	// })
+	const {
+		register,
+		formState: { errors },
+	} = useForm<LoginFormData>({
+		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
+	})
 	return (
 		<div className='relative flex h-screen w-full items-center justify-center px-4'>
 			<Button
@@ -75,27 +103,27 @@ export default function LoginPage() {
 				<CardHeader>
 					<CardTitle className='text-2xl'>Login</CardTitle>
 					<CardDescription>
-						Enter your login ID below to access your account
+						Enter your email below to access your account
 					</CardDescription>
-					{/* {actionData?.error && (
+					{actionData?.error && (
 						<p className='text-sm font-medium text-red-500 dark:text-red-400'>
 							{actionData.error}
 						</p>
-					)} */}
+					)}
 				</CardHeader>
 				<CardContent>
 					<Form method='post' className='grid gap-4'>
 						<div className='grid gap-2'>
-							<Label htmlFor='loginID'>Login ID</Label>
+							<Label htmlFor='email'>Email</Label>
 							<Input
-								// {...register('loginID')}
+								{...register('email')}
 								required
-								id='loginID'
-								placeholder='Enter your login ID'
+								id='email'
+								placeholder='Enter your email'
 							/>
-							{/* {errors.loginID && (
-								<p className='text-sm text-red-500'>{errors.loginID.message}</p>
-							)} */}
+							{errors.email && (
+								<p className='text-sm text-red-500'>{errors.email.message}</p>
+							)}
 						</div>
 						<div className='grid gap-2'>
 							<div className='flex items-center'>
@@ -105,17 +133,17 @@ export default function LoginPage() {
 								</Link>
 							</div>
 							<Input
-								// {...register('password')}
+								{...register('password')}
 								required
 								id='password'
 								type='password'
 								placeholder='Enter password'
 							/>
-							{/* {errors.password && (
+							{errors.password && (
 								<p className='text-sm text-red-500'>
 									{errors.password.message}
 								</p>
-							)} */}
+							)}
 						</div>
 						<Button type='submit' className='w-full' disabled={isSubmitting}>
 							{isSubmitting ? 'Logging in...' : 'Login'}

@@ -59,9 +59,7 @@ export async function createUserSession(token: string, user: User) {
 	session.set('token', token)
 	session.set('user', user)
 
-	const redirectTo = user.role === 'librarian' ? '/librarian' : '/student'
-
-	return redirect(redirectTo, {
+	return redirect('/admin', {
 		headers: {
 			'Set-Cookie': await authSessionStorage.commitSession(session),
 		},
@@ -88,30 +86,6 @@ export async function requireUser(request: Request) {
 		throw redirect('/login')
 	}
 
-	return userSession
-}
-
-export async function requireLibrarianUser(request: Request) {
-	const userSession = await requireUser(request)
-
-	if (userSession.user.role !== 'librarian') {
-		throw redirect('/login')
-	}
-
-	// Set the token for the API request
-	api.defaults.headers.common['Authorization'] = `Bearer ${userSession.token}`
-
-	return userSession
-}
-
-export async function requireStudentUser(request: Request) {
-	const userSession = await requireUser(request)
-
-	if (userSession.user.role !== 'student') {
-		throw redirect('/login')
-	}
-
-	// Set the token for the API request
 	api.defaults.headers.common['Authorization'] = `Bearer ${userSession.token}`
 
 	return userSession

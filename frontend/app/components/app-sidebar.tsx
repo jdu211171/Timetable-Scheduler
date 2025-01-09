@@ -1,5 +1,18 @@
 import * as React from 'react'
-import { ArchiveX, Command, File, Inbox, Send, Trash2 } from 'lucide-react'
+import {
+	ArchiveX,
+	Command,
+	File,
+	GraduationCap,
+	Inbox,
+	LayoutDashboard,
+	NotebookTabs,
+	School,
+	Trash2,
+	User,
+	UserPen,
+	Users,
+} from 'lucide-react'
 
 import { NavUser } from '~/components/nav-user'
 import { Label } from '~/components/ui/label'
@@ -17,44 +30,51 @@ import {
 	useSidebar,
 } from '~/components/ui/sidebar'
 import { Switch } from '~/components/ui/switch'
-import { User } from '~/types/auth'
+import { useTheme } from 'remix-themes'
 
 // This is sample data
 const data = {
-	user: {
-		name: 'shadcn',
-		email: 'm@example.com',
-		avatar: '/avatars/shadcn.jpg',
-	},
 	navMain: [
 		{
-			title: 'Inbox',
-			url: '#',
-			icon: Inbox,
+			title: 'Dashboard',
+			url: '/admin/dashboard',
+			icon: LayoutDashboard,
 			isActive: true,
 		},
 		{
-			title: 'Drafts',
-			url: '#',
-			icon: File,
+			title: 'Calendar',
+			url: '/admin/timetables',
+			icon: NotebookTabs,
 			isActive: false,
 		},
 		{
-			title: 'Sent',
-			url: '#',
-			icon: Send,
+			title: 'Groups',
+			url: '/admin/groups',
+			icon: Users,
 			isActive: false,
 		},
 		{
-			title: 'Junk',
-			url: '#',
-			icon: ArchiveX,
+			title: 'Students',
+			url: '/admin/students',
+			icon: User,
 			isActive: false,
 		},
 		{
-			title: 'Trash',
-			url: '#',
-			icon: Trash2,
+			title: 'Teachers',
+			url: '/admin/teachers',
+			icon: UserPen,
+			isActive: false,
+		},
+		{
+			title: 'Rooms',
+			url: '/admin/rooms',
+			icon: School,
+			isActive: false,
+		},
+		{
+			title: 'Lessons',
+			url: '/admin/lessons',
+			icon: GraduationCap,
 			isActive: false,
 		},
 	],
@@ -146,15 +166,13 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	user: User
 }
 
-export function AppSidebar({
-	user,
-	...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
 	// Note: I'm using state to show active item.
 	// IRL you should use the url/router.
 	const [activeItem, setActiveItem] = React.useState(data.navMain[0])
 	const [mails, setMails] = React.useState(data.mails)
 	const { setOpen } = useSidebar()
+	const [theme] = useTheme()
 
 	return (
 		<Sidebar
@@ -178,8 +196,8 @@ export function AppSidebar({
 										<Command className='size-4' />
 									</div>
 									<div className='grid flex-1 text-left text-sm leading-tight'>
-										<span className='truncate font-semibold'>Acme Inc</span>
-										<span className='truncate text-xs'>Enterprise</span>
+										<span className='truncate font-semibold'>Byte Synergy</span>
+										<span className='truncate text-xs'>Inc.</span>
 									</div>
 								</a>
 							</SidebarMenuButton>
@@ -221,24 +239,19 @@ export function AppSidebar({
 					</SidebarGroup>
 				</SidebarContent>
 				<SidebarFooter>
-					<NavUser user={data.user} />
+					<NavUser user={user} />
 				</SidebarFooter>
 			</Sidebar>
 
 			{/* This is the second sidebar */}
 			{/* We disable collapsible and let it fill remaining space */}
 			<Sidebar collapsible='none' className='hidden flex-1 md:flex'>
-				<SidebarHeader className='gap-3.5 border-b p-4'>
-					<div className='flex w-full items-center justify-between'>
+				<SidebarHeader className='flex gap-3.5 border-b h-12 items-center'>
+					<div className='flex w-full items-center justify-start'>
 						<div className='text-base font-medium text-foreground'>
 							{activeItem.title}
 						</div>
-						<Label className='flex items-center gap-2 text-sm'>
-							<span>Unreads</span>
-							<Switch className='shadow-none' />
-						</Label>
 					</div>
-					<SidebarInput placeholder='Type to search...' />
 				</SidebarHeader>
 				<SidebarContent>
 					<SidebarGroup className='px-0'>
