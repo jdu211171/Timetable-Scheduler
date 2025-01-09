@@ -176,7 +176,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 			{/* This will make the sidebar appear as icons. */}
 			<Sidebar
 				collapsible='none'
-				className='!w-[calc(var(--sidebar-width-icon)_+_1px)] border-r'
+				className='!w-[calc(var(--sidebar-width-icon)_+_1px)] border-r bg-background'
 			>
 				<SidebarHeader>
 					<SidebarMenu>
@@ -236,7 +236,10 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 
 			{/* This is the second sidebar */}
 			{/* We disable collapsible and let it fill remaining space */}
-			<Sidebar collapsible='none' className='hidden flex-1 md:flex'>
+			<Sidebar
+				collapsible='none'
+				className='hidden flex-1 md:flex bg-background'
+			>
 				<SidebarHeader className='flex gap-3.5 border-b h-12 items-center'>
 					<div className='flex w-full items-center justify-start'>
 						<div className='text-base font-medium text-foreground'>

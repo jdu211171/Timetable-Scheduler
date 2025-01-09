@@ -91,7 +91,7 @@ export default function LoginPage() {
 		},
 	})
 	return (
-		<div className='relative flex h-screen w-full items-center justify-center px-4'>
+		<div className='relative flex h-screen w-full items-center justify-center px-4 bg-background'>
 			<Button
 				variant='ghost'
 				onClick={() => navigate('/')}
