@@ -17,6 +17,7 @@ import {
 	useSidebar,
 } from '~/components/ui/sidebar'
 import { Switch } from '~/components/ui/switch'
+import { User } from '~/types/auth'
 
 // This is sample data
 const data = {
@@ -141,7 +142,14 @@ const data = {
 	],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+	user: User
+}
+
+export function AppSidebar({
+	user,
+	...props
+}: React.ComponentProps<typeof Sidebar>) {
 	// Note: I'm using state to show active item.
 	// IRL you should use the url/router.
 	const [activeItem, setActiveItem] = React.useState(data.navMain[0])
