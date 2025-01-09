@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ActionFunctionArgs } from '@remix-run/node'
+import type { ActionFunctionArgs } from '@remix-run/node'
 import {
 	Form,
 	json,
@@ -22,7 +22,8 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { createUserSession } from '~/services/auth.server'
-import { LoginFormData, loginSchema } from '~/types/auth'
+import type { LoginFormData } from '~/types/auth'
+import { loginSchema } from '~/types/auth'
 
 export function meta() {
 	return [{ title: 'Login' }, { description: 'Login to your account' }]

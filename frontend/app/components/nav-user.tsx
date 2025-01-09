@@ -1,3 +1,4 @@
+import { Link } from '@remix-run/react'
 import {
 	BadgeCheck,
 	Bell,
@@ -23,7 +24,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from '~/components/ui/sidebar'
-import { User } from '~/types/auth'
+import type { User } from '~/types/auth'
 
 export function NavUser({ user }: { user: User }) {
 	const { isMobile } = useSidebar()
@@ -89,10 +90,12 @@ export function NavUser({ user }: { user: User }) {
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>
-							<LogOut />
-							Log out
-						</DropdownMenuItem>
+						<Link to='/logout'>
+							<DropdownMenuItem>
+								<LogOut />
+								Log out
+							</DropdownMenuItem>
+						</Link>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>

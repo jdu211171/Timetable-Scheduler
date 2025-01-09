@@ -1,21 +1,15 @@
 import * as React from 'react'
 import {
-	ArchiveX,
 	Command,
-	File,
 	GraduationCap,
-	Inbox,
 	LayoutDashboard,
 	NotebookTabs,
 	School,
-	Trash2,
-	User,
+	User as UserIcon,
 	UserPen,
 	Users,
 } from 'lucide-react'
-
 import { NavUser } from '~/components/nav-user'
-import { Label } from '~/components/ui/label'
 import {
 	Sidebar,
 	SidebarContent,
@@ -23,14 +17,12 @@ import {
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarHeader,
-	SidebarInput,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	useSidebar,
 } from '~/components/ui/sidebar'
-import { Switch } from '~/components/ui/switch'
-import { useTheme } from 'remix-themes'
+import type { User } from '~/types/auth'
 
 // This is sample data
 const data = {
@@ -56,7 +48,7 @@ const data = {
 		{
 			title: 'Students',
 			url: '/admin/students',
-			icon: User,
+			icon: UserIcon,
 			isActive: false,
 		},
 		{
@@ -172,7 +164,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 	const [activeItem, setActiveItem] = React.useState(data.navMain[0])
 	const [mails, setMails] = React.useState(data.mails)
 	const { setOpen } = useSidebar()
-	const [theme] = useTheme()
 
 	return (
 		<Sidebar

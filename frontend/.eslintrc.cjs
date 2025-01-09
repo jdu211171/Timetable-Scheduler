@@ -9,6 +9,8 @@ module.exports = {
 	root: true,
 	parserOptions: {
 		ecmaVersion: 'latest',
+		project: './tsconfig.json',
+		tsconfigRootDir: __dirname,
 		sourceType: 'module',
 		ecmaFeatures: {
 			jsx: true,
@@ -19,13 +21,13 @@ module.exports = {
 		commonjs: true,
 		es6: true,
 	},
-	ignorePatterns: ['!**/.server', '!**/.client'],
+	ignorePatterns: ['!**/.server', '!**/.client', 'app/components/ui/'],
 
 	// Base config
 	extends: ['eslint:recommended'],
 
 	overrides: [
-		// React
+		// React and JSX
 		{
 			files: ['**/*.{js,jsx,ts,tsx}'],
 			plugins: ['react', 'jsx-a11y', 'prettier'],
@@ -34,7 +36,12 @@ module.exports = {
 				'plugin:react/jsx-runtime',
 				'plugin:react-hooks/recommended',
 				'plugin:jsx-a11y/recommended',
+				'plugin:prettier/recommended',
 			],
+			rules: {
+				'react/jsx-key': 'error',
+				'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+			},
 			settings: {
 				react: {
 					version: 'detect',
@@ -50,26 +57,26 @@ module.exports = {
 			},
 		},
 
-		// Typescript
+		// TypeScript
 		{
 			files: ['**/*.{ts,tsx}'],
+			plugins: ['@typescript-eslint', 'import', 'prettier'],
 			parser: '@typescript-eslint/parser',
-			plugins: [
-				'@typescript-eslint',
-				'import',
-				'@typescript-eslint',
-				'prettier',
-			],
 			rules: {
-				'prettier/prettier': 'error',
+				'@typescript-eslint/no-unused-vars': ['error'],
+				'@typescript-eslint/no-explicit-any': 'off',
+				'@typescript-eslint/no-misused-promises': 'error',
+				'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+				'linebreak-style': ['error', 'unix'],
 			},
 			settings: {
 				'import/internal-regex': '^~/',
 				'import/resolver': {
 					node: {
-						extensions: ['.ts', '.tsx'],
+						extensions: ['.ts', '.tsx', '.js', '.jsx'],
 					},
 					typescript: {
+						project: './tsconfig.json',
 						alwaysTryTypes: true,
 					},
 				},
@@ -78,12 +85,11 @@ module.exports = {
 				'plugin:@typescript-eslint/recommended',
 				'plugin:import/recommended',
 				'plugin:import/typescript',
-				'plugin:@typescript-eslint/recommended',
 				'plugin:prettier/recommended',
 			],
 		},
 
-		// Node
+		// Node-specific settings
 		{
 			files: ['.eslintrc.cjs'],
 			env: {
