@@ -109,7 +109,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 								<Link
 									to={item.url}
 									key={item.url}
-									className='flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+									className='flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
 								>
 									<div className='flex w-full items-center gap-2'>
 										<span>{item.title}</span>
