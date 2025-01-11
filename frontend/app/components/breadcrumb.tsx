@@ -98,7 +98,7 @@ const routeMap: Record<string, RouteMapItem> = {
 		path: '/admin/timetables/:id/conflicts',
 	},
 	'routes/admin.resources': { title: 'Resources', path: '/admin/resources' },
-	...navConfig.admin.reduce(
+	...navConfig.reduce(
 		(acc, section) => ({
 			...acc,
 			...section.items.reduce(
@@ -116,15 +116,11 @@ const routeMap: Record<string, RouteMapItem> = {
 	),
 }
 
-export function DynamicBreadcrumb() {
-	const matches = useMatches()
-
-	const breadcrumbs = matches
+function getBreadcrumbs(matches: ReturnType<typeof useMatches>) {
+	return matches
 		.filter(match => match.id !== 'root')
-		.filter(match => !match.id.includes('._index'))
 		.map(match => {
-			const routeId = match.id.replace(/\$/g, '')
-			if (routeId.includes('._index')) return null
+			const routeId = match.id.replace(/..index/g, '')
 			return {
 				id: match.id,
 				title: routeMap[routeId]?.title || routeId.split('/').pop() || '',
@@ -132,6 +128,11 @@ export function DynamicBreadcrumb() {
 			}
 		})
 		.filter(Boolean)
+}
+
+export function DynamicBreadcrumb() {
+	const matches = useMatches()
+	const breadcrumbs = getBreadcrumbs(matches)
 
 	if (breadcrumbs.length === 0) return null
 
