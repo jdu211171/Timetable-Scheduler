@@ -41,13 +41,6 @@ docker-compose down
     ```
 - API URL: `http://localhost:8040`
 
-### Frontend
-
-```sh
-cd cpm-client
-npm run dev  # Development server
-```
-
 ## Before Contributing
 
 1. Always pull latest changes:
