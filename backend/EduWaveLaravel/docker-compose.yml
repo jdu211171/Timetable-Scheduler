@@ -1,0 +1,40 @@
+services:
+    jdu_web:
+        container_name: jdu_web
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                UID: ${UID:-1000}
+                GID: ${GID:-1000}
+        ports:
+            - "8040:80"
+        volumes:
+            - ./:/var/www/html
+        environment:
+            - DB_HOST=jdu_db
+        depends_on:
+            - jdu_db
+        networks:
+            - jdu_network
+
+    jdu_db:
+        image: postgres:latest
+        container_name: jdu_db
+        environment:
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        networks:
+            - jdu_network
+
+networks:
+    jdu_network:
+        driver: bridge
+
+volumes:
+    postgres_data:
