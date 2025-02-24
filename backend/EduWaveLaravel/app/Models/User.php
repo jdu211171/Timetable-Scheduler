@@ -7,22 +7,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Group;
 use App\Models\Subject;
+use App\Models\Schedule;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    const ROLE_ADMIN = 'admin';
+    const ROLE_TEACHER = 'teacher';
+    const ROLE_STUDENT = 'student';
+
     use HasFactory, Notifiable;
-
-    public function groups()
-    {
-        return $this->belongsToMany(Group::class);
-    }
-
-    public function subjectsTaught()
-    {
-        return $this->belongsToMany(Subject::class, 'SubjectTeachers', 'teacher_id');
-    }
-
 
     /**
      * The attributes that are mass assignable.
@@ -35,7 +28,7 @@ class User extends Authenticatable
         'email',
         'unique_id',
         'password',
-        'is_admin',
+        'role',
     ];
 
     /**
@@ -60,5 +53,29 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the groups that the user (student) belongs to.
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'GroupMembers');
+    }
+
+    /**
+     * Get the subjects that the user (teacher) teaches.
+     */
+    public function subjectsTaught()
+    {
+        return $this->belongsToMany(Subject::class, 'SubjectTeachers', 'teacher_id', 'subject_id');
+    }
+
+    /**
+     * Get the schedules taught by the user (teacher).
+     */
+    public function schedulesTaught()
+    {
+        return $this->hasMany(Schedule::class, 'user_id');
     }
 }
