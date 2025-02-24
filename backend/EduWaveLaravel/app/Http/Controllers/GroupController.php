@@ -2,48 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GroupRequest;
+use App\Http\Resources\GroupCollection;
+use App\Http\Resources\GroupResource;
 use App\Models\Group;
-use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        return new GroupCollection(Group::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(GroupRequest $request)
     {
-        //
+        $group = Group::create($request->validated());
+        return new GroupResource($group);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Group $group)
     {
-        //
+        return new GroupResource($group);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Group $group)
+    public function update(GroupRequest $request, Group $group)
     {
-        //
+        $group->update($request->validated());
+        return new GroupResource($group);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Group $group)
     {
-        //
+        $group->delete();
+        return response()->noContent();
     }
+
 }

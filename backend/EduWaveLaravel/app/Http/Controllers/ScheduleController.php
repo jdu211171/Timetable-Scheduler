@@ -2,48 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ScheduleRequest;
+use App\Http\Resources\ScheduleCollection;
+use App\Http\Resources\ScheduleResource;
 use App\Models\Schedule;
-use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        return new ScheduleCollection(Schedule::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(ScheduleRequest $request)
     {
-        //
+        $schedule = Schedule::create($request->validated());
+        return new ScheduleResource($schedule);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Schedule $schedule)
     {
-        //
+        return new ScheduleResource($schedule);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Schedule $schedule)
+    public function update(ScheduleRequest $request, Schedule $schedule)
     {
-        //
+        $schedule->update($request->validated());
+        return new ScheduleResource($schedule);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Schedule $schedule)
     {
-        //
+        $schedule->delete();
+        return response()->noContent();
     }
+
 }
