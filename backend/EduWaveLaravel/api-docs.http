@@ -1,0 +1,67 @@
+### Root
+GET {{baseUrl}}
+Content-Type: application/json
+Accept: application/json
+
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+    "first_name": "User",
+    "last_name": "User",
+    "email": "user@gmail.com",
+    "password": "nopassword",
+    "password_confirmation": "nopassword",
+    "unique_id": "211171"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "user@gmail.com",
+    "password": "nopassword"
+}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Forgot Password (Not Working)
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "user@gmail.com"
+}
+
+### Reset Password (Not Working)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+Accept: application/json
+
+{
+    "token": "reset-token",
+    "email": "user@gmail.com",
+    "password": "newpassword",
+    "password_confirmation": "newpassword"
+}
+
+### Email Verification Notification (Not Working)
+POST {{baseUrl}}/auth/email/verification-notification
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Verify Email (Not Working)
+GET {{baseUrl}}/auth/email/verify/{{id}}/{{hash}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}

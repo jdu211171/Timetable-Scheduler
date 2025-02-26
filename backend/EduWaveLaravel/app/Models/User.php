@@ -8,14 +8,11 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Group;
 use App\Models\Subject;
 use App\Models\Schedule;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    const ROLE_ADMIN = 'admin';
-    const ROLE_TEACHER = 'teacher';
-    const ROLE_STUDENT = 'student';
-
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -51,7 +48,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
         ];
     }
 
