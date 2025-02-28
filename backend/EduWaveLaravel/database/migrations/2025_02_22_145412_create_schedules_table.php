@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subject_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained('users');
             $table->foreignId('group_id')->constrained();
             $table->foreignId('room_id')->constrained();
-            $table->tinyInteger('pairs');
-            $table->tinyInteger('week_day');
+            $table->tinyInteger('pair');
+            $table->enum('week_day', ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
             $table->date('date');
+            $table->unique(['subject_id', 'user_id', 'group_id', 'room_id', 'pair'], 'schedule_unique');
             $table->timestamps();
         });
     }
