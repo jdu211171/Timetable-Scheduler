@@ -19,7 +19,7 @@ class GroupRequest extends FormRequest
         ];
 
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $groupId = $this->route('group');
+            $groupId = $this->route('group')->id;
             $rules['name'] = 'required|string|max:255|unique:groups,name,' . $groupId;
         }
 

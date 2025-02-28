@@ -29,10 +29,8 @@ class ScheduleRequest extends FormRequest
             ],
             'group_id' => 'required|exists:groups,id',
             'room_id' => 'required|exists:rooms,id',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'repeat_weekly' => 'boolean',
-            'week_day' => 'required_if:repeat_weekly,true|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'pair' => 'required|integer|between:1,9',
+            'week_day' => 'required_if:repeat_weekly,true|in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
             'date' => 'required|date',
         ];
     }

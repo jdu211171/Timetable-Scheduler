@@ -23,7 +23,7 @@ class Schedule extends Model
         'user_id',
         'group_id',
         'room_id',
-        'pairs',
+        'pair',
         'week_day',
         'date',
     ];
