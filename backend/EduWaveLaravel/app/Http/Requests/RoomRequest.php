@@ -19,7 +19,7 @@ class RoomRequest extends FormRequest
         ];
 
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $roomId = $this->route('room');
+            $roomId = $this->route('room')->id;
             $rules['name'] = 'required|string|max:255|unique:rooms,name,' . $roomId;
         }
 

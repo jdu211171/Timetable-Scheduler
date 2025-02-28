@@ -115,3 +115,41 @@ DELETE {{baseUrl}}/users/{{userId}}
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{token}}
+
+### Get All Rooms
+GET {{baseUrl}}/rooms
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Get Single Room
+GET {{baseUrl}}/rooms/{{roomId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Create Room
+POST {{baseUrl}}/rooms
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Room 101"
+}
+
+### Update Room
+PUT {{baseUrl}}/rooms/{{roomId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Room 102"
+}
+
+### Delete Room
+DELETE {{baseUrl}}/rooms/{{roomId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
