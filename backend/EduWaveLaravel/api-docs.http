@@ -153,3 +153,41 @@ DELETE {{baseUrl}}/rooms/{{roomId}}
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{token}}
+
+### Get All Subjects
+GET {{baseUrl}}/subjects
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Get Single Subject
+GET {{baseUrl}}/subjects/{{subjectId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Create Subject
+POST {{baseUrl}}/subjects
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "My New Subject"
+}
+
+### Update Subject
+PUT {{baseUrl}}/subjects/{{subjectId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "My Updated Subject"
+}
+
+### Delete Subject
+DELETE {{baseUrl}}/subjects/{{subjectId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}

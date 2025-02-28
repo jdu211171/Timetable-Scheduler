@@ -19,7 +19,7 @@ class SubjectRequest extends FormRequest
         ];
 
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $subjectId = $this->route('subject');
+            $subjectId = $this->route('subject')->id;
             $rules['name'] = 'required|string|max:255|unique:subjects,name,' . $subjectId;
         }
 
