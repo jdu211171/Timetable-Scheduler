@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
             $rules['email'] .= '|unique:users,email';
             $rules['password'] = 'required|string|min:8|confirmed';
         } elseif ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $userId = $this->route('user');
+            $userId = $this->route('user')->id;
             $rules['email'] .= '|unique:users,email,' . $userId;
             $rules['password'] = 'sometimes|string|min:8|confirmed';
             $rules['unique_id'] .= ',' . $userId;
