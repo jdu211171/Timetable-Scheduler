@@ -43,12 +43,12 @@ WORKDIR /var/www/html
 # Copy application code (including artisan)
 COPY . .
 
-RUN cp .env.example .env
-
-RUN php artisan key:generate
-
-# Install dependencies (without dev requirements)
+# Install dependencies FIRST
 RUN composer install --no-interaction --no-dev --optimize-autoloader
+
+# THEN setup environment and generate key
+RUN cp .env.example .env
+RUN php artisan key:generate
 
 # Configure Apache
 RUN a2enmod rewrite
