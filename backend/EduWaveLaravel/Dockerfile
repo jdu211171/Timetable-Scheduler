@@ -43,11 +43,10 @@ WORKDIR /var/www/html
 # Copy application code (including artisan)
 COPY . .
 
-# Install dependencies FIRST
+# Install dependencies (without dev requirements)
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# THEN setup environment and generate key
-RUN cp .env.example .env
+# Generate application key
 RUN php artisan key:generate
 
 # Configure Apache
