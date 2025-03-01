@@ -13,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
+
 
 class AuthController extends Controller
 {
@@ -78,4 +80,30 @@ class AuthController extends Controller
             ? response()->json(['message' => 'Password reset successfully'], 200)
             : response()->json(['message' => 'Invalid token or email'], 400);
     }
+
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->stateless()->redirect();
+    }
+
+    public function handleProviderCallback($provider)
+    {
+        $user = Socialite::driver($provider)->stateless()->user();
+        $fullName = $user->getName();
+        $nameParts = explode(' ', $fullName, 2);
+        $firstName = $nameParts[0] ?? $fullName;
+        $lastName = $nameParts[1] ?? '';
+        $user = User::firstOrCreate([
+            'email' => $user->email
+        ], [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'password' => Hash::make(Str::random(24))
+        ]);
+
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        return response()->json(['token' => $token]);
+    }
+
 }

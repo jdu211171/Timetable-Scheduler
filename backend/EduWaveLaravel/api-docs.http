@@ -27,6 +27,9 @@ Accept: application/json
     "password": "nopassword"
 }
 
+### Google Login
+GET {{baseUrl}}/auth/redirect/google
+
 ### Logout
 POST {{baseUrl}}/auth/logout
 Content-Type: application/json

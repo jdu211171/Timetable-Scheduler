@@ -15,6 +15,8 @@ Route::prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::get('/redirect/{provider}', [AuthController::class, 'redirectToProvider']);
+    Route::get('/callback/{provider}', [AuthController::class, 'handleProviderCallback']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
