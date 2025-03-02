@@ -1,0 +1,58 @@
+name: Build Docker Stack TUI Binaries
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/build.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "**.go"
+      - "go.mod"
+      - "go.sum"
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.22"
+
+      - name: Build binaries
+        run: |
+          mkdir -p bin
+          GOOS=linux GOARCH=amd64 go build -o bin/docker-stack-linux-amd64 -ldflags="-s -w" .
+          GOOS=linux GOARCH=arm64 go build -o bin/docker-stack-linux-arm64 -ldflags="-s -w" .
+          GOOS=darwin GOARCH=amd64 go build -o bin/docker-stack-macos-amd64 -ldflags="-s -w" .
+          GOOS=darwin GOARCH=arm64 go build -o bin/docker-stack-macos-arm64 -ldflags="-s -w" .
+          GOOS=windows GOARCH=amd64 go build -o bin/docker-stack-windows-amd64.exe -ldflags="-s -w" .
+          chmod +x bin/docker-stack-*
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: bin/
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            bin/docker-stack-linux-amd64
+            bin/docker-stack-linux-arm64
+            bin/docker-stack-macos-amd64
+            bin/docker-stack-macos-arm64
+            bin/docker-stack-windows-amd64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
