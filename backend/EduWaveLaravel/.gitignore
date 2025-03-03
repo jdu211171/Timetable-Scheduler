@@ -50,3 +50,7 @@ docker/.env
 *.sublime-workspace
 *.sublime-project
 .DS_Store
+
+# Docker developer-specific files
+.env
+docker-compose.override.yml
