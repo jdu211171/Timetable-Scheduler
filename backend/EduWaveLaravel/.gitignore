@@ -36,9 +36,9 @@ docker-compose.override.yml
 docker/.env
 
 # Go tool and build artifacts
-/bin/
-*.exe
-go.sum
+# /bin/
+# *.exe
+# go.sum
 /vendor/
 *_templ.go
 
