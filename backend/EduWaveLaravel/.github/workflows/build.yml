@@ -1,33 +1,32 @@
-name: Build Docker Stack TUI Binaries
+name: Build Go Application
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "**.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/build.yml"
+    branches:
+      - main
   pull_request:
-    branches: [main]
-    paths:
-      - "**.go"
-      - "go.mod"
-      - "go.sum"
+    branches:
+      - main
   release:
-    types: [created]
+    types:
+      - created
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      # Set up Go environment
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.21" # Adjust to your Go version
 
+      # Create bin directory and build binaries for multiple platforms
       - name: Build binaries
         run: |
           mkdir -p bin
@@ -36,14 +35,21 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -o bin/docker-stack-macos-amd64 -ldflags="-s -w" .
           GOOS=darwin GOARCH=arm64 go build -o bin/docker-stack-macos-arm64 -ldflags="-s -w" .
           GOOS=windows GOARCH=amd64 go build -o bin/docker-stack-windows-amd64.exe -ldflags="-s -w" .
-          chmod +x bin/docker-stack-*
+          chmod +x bin/docker-stack-*  # Make binaries executable (except Windows)
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      # Optional: Test the Linux binary (adjust based on your app's flags)
+      - name: Test Linux binary
+        run: |
+          ./bin/docker-stack-linux-amd64 --version  # Replace with your app's test command
+
+      # Upload binaries as artifacts
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
         with:
-          name: binaries
+          name: go-binaries
           path: bin/
 
+      # Attach binaries to GitHub Release (only on release event)
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -54,5 +60,3 @@ jobs:
             bin/docker-stack-macos-amd64
             bin/docker-stack-macos-arm64
             bin/docker-stack-windows-amd64.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

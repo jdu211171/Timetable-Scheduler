@@ -1,93 +1,45 @@
-# This is a basic workflow that is manually triggered
-name: Manual workflow
+name: Manual Go Build
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
       action:
         description: 'Action to perform'
         required: true
-        default: 'greet'
+        default: 'build-tui'
         type: choice
         options:
-          - greet
           - build-tui
-          - test-backend
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains multiple jobs that will run based on the selected action
-  main:
-    # The type of runner that the job will run on
+  build:
     runs-on: ubuntu-latest
-    
-    # Steps represent a sequence of tasks that will be executed as part of the job
+
     steps:
-    # Checkout the repository code
-    - name: Checkout code
-      uses: actions/checkout@v3
-      if: ${{ inputs.action == 'build-tui' || inputs.action == 'test-backend' }}
-      
-    # Simple greeting
-    - name: Send greeting
-      if: ${{ inputs.action == 'greet' }}
-      run: echo "Hello ${{ inputs.name }}"
-      
-    # Build the TUI tool
-    - name: Set up Go
-      if: ${{ inputs.action == 'build-tui' }}
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.22'
-        
-    - name: Build TUI binaries
-      if: ${{ inputs.action == 'build-tui' }}
-      run: |
-        cd backend/EduWaveLaravel
-        mkdir -p bin
-        GOOS=linux GOARCH=amd64 go build -o bin/docker-stack-linux-amd64 -ldflags="-s -w" .
-        GOOS=darwin GOARCH=amd64 go build -o bin/docker-stack-macos-amd64 -ldflags="-s -w" .
-        GOOS=windows GOARCH=amd64 go build -o bin/docker-stack-windows-amd64.exe -ldflags="-s -w" .
-        chmod +x bin/docker-stack-*
-        echo "TUI binaries built successfully"
-        
-    - name: Upload TUI binaries
-      if: ${{ inputs.action == 'build-tui' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: tui-binaries
-        path: backend/EduWaveLaravel/bin/
-        
-    # Test backend
-    - name: Set up PHP
-      if: ${{ inputs.action == 'test-backend' }}
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        extensions: mbstring, pdo, pdo_pgsql, xml
-        
-    - name: Install dependencies
-      if: ${{ inputs.action == 'test-backend' }}
-      run: |
-        cd backend/EduWaveLaravel
-        composer install --no-interaction --prefer-dist
-        
-    - name: Run tests
-      if: ${{ inputs.action == 'test-backend' }}
-      run: |
-        cd backend/EduWaveLaravel
-        cp .env.example .env
-        php artisan key:generate
-        php artisan test
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Go environment
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21' # Adjust to your Go version
+
+      # Build binaries for selected platforms
+      - name: Build TUI binaries
+        if: ${{ inputs.action == 'build-tui' }}
+        run: |
+          mkdir -p bin
+          GOOS=linux GOARCH=amd64 go build -o bin/docker-stack-linux-amd64 -ldflags="-s -w" .
+          GOOS=darwin GOARCH=amd64 go build -o bin/docker-stack-macos-amd64 -ldflags="-s -w" .
+          GOOS=windows GOARCH=amd64 go build -o bin/docker-stack-windows-amd64.exe -ldflags="-s -w" .
+          chmod +x bin/docker-stack-*  # Make binaries executable (except Windows)
+
+      # Upload binaries as artifacts
+      - name: Upload TUI binaries
+        if: ${{ inputs.action == 'build-tui' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tui-binaries
+          path: bin/
