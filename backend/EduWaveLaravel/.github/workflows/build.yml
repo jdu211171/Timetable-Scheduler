@@ -26,28 +26,41 @@ jobs:
         with:
           go-version: "1.21" # Adjust to your Go version
 
-      # Create bin directory and build binaries for multiple platforms
+      # Restore Go cache to speed up builds (new addition)
+      - name: Restore Go cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      # Build binaries for multiple platforms
       - name: Build binaries
         run: |
+          cd backend/EduWaveLaravel # Change to the correct directory
           mkdir -p bin
           GOOS=linux GOARCH=amd64 go build -o bin/docker-stack-linux-amd64 -ldflags="-s -w" .
           GOOS=linux GOARCH=arm64 go build -o bin/docker-stack-linux-arm64 -ldflags="-s -w" .
           GOOS=darwin GOARCH=amd64 go build -o bin/docker-stack-macos-amd64 -ldflags="-s -w" .
           GOOS=darwin GOARCH=arm64 go build -o bin/docker-stack-macos-arm64 -ldflags="-s -w" .
           GOOS=windows GOARCH=amd64 go build -o bin/docker-stack-windows-amd64.exe -ldflags="-s -w" .
-          chmod +x bin/docker-stack-*  # Make binaries executable (except Windows)
+          chmod +x bin/docker-stack-* # Make binaries executable (except Windows)
 
-      # Optional: Test the Linux binary (adjust based on your app's flags)
+      # Test the Linux binary (optional, adjust as needed)
       - name: Test Linux binary
         run: |
-          ./bin/docker-stack-linux-amd64 --version  # Replace with your app's test command
+          cd backend/EduWaveLaravel # Ensure correct directory
+          ./bin/docker-stack-linux-amd64 --version # Replace with your app's test command
 
       # Upload binaries as artifacts
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
           name: go-binaries
-          path: bin/
+          path: backend/EduWaveLaravel/bin/ # Path matches the build output
 
       # Attach binaries to GitHub Release (only on release event)
       - name: Release
@@ -55,8 +68,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            bin/docker-stack-linux-amd64
-            bin/docker-stack-linux-arm64
-            bin/docker-stack-macos-amd64
-            bin/docker-stack-macos-arm64
-            bin/docker-stack-windows-amd64.exe
+            backend/EduWaveLaravel/bin/docker-stack-linux-amd64
+            backend/EduWaveLaravel/bin/docker-stack-linux-arm64
+            backend/EduWaveLaravel/bin/docker-stack-macos-amd64
+            backend/EduWaveLaravel/bin/docker-stack-macos-arm64
+            backend/EduWaveLaravel/bin/docker-stack-windows-amd64.exe
