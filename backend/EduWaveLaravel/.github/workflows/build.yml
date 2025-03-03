@@ -14,62 +14,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Set up Go environment
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.21" # Adjust to your Go version
+          go-version: 1.21
 
-      # Restore Go cache to speed up builds (new addition)
       - name: Restore Go cache
         uses: actions/cache@v4
         with:
           path: |
-            ~/go-build
             ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('backend/EduWaveLaravel/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
 
-      # Build binaries for multiple platforms
-      - name: Build binaries
+      - name: Build
         run: |
-          cd backend/EduWaveLaravel # Change to the correct directory
+          cd backend/EduWaveLaravel
           mkdir -p bin
           GOOS=linux GOARCH=amd64 go build -o bin/docker-stack-linux-amd64 -ldflags="-s -w" .
-          GOOS=linux GOARCH=arm64 go build -o bin/docker-stack-linux-arm64 -ldflags="-s -w" .
           GOOS=darwin GOARCH=amd64 go build -o bin/docker-stack-macos-amd64 -ldflags="-s -w" .
-          GOOS=darwin GOARCH=arm64 go build -o bin/docker-stack-macos-arm64 -ldflags="-s -w" .
           GOOS=windows GOARCH=amd64 go build -o bin/docker-stack-windows-amd64.exe -ldflags="-s -w" .
-          chmod +x bin/docker-stack-* # Make binaries executable (except Windows)
-
-      # Test the Linux binary (optional, adjust as needed)
-      - name: Test Linux binary
-        run: |
-          cd backend/EduWaveLaravel # Ensure correct directory
-          ./bin/docker-stack-linux-amd64 --version # Replace with your app's test command
-
-      # Upload binaries as artifacts
-      - name: Upload binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: go-binaries
-          path: backend/EduWaveLaravel/bin/ # Path matches the build output
-
-      # Attach binaries to GitHub Release (only on release event)
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            backend/EduWaveLaravel/bin/docker-stack-linux-amd64
-            backend/EduWaveLaravel/bin/docker-stack-linux-arm64
-            backend/EduWaveLaravel/bin/docker-stack-macos-amd64
-            backend/EduWaveLaravel/bin/docker-stack-macos-arm64
-            backend/EduWaveLaravel/bin/docker-stack-windows-amd64.exe
+          chmod +x bin/docker-stack-*
