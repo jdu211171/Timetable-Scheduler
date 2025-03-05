@@ -10,14 +10,16 @@ test('admin can update user', function () {
         'first_name' => 'Old',
         'last_name' => 'Name',
         'email' => 'old.name@example.com',
-        'role' => 'student'
+        'role' => 'student',
+        'unique_id' => '654321'
     ]);
 
     $updateData = [
         'first_name' => 'New',
         'last_name' => 'Name',
         'email' => 'new.name@example.com',
-        'role' => 'student'
+        'role' => 'student',
+        'unique_id' => '123456'
     ];
 
     $response = $this->withHeaders([
