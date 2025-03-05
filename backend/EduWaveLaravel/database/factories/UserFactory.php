@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -26,15 +25,18 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Determine if this is a student or teacher based on a random choice
+        $isTeacher = $this->faker->boolean(30); // 30% chance of being a teacher
+        $prefix = $isTeacher ? 'TE' : 'ST';
+
         return [
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
-            'unique_id' => $this->faker->unique()->regexify('[A-Z]{2}[0-9]{5}'),
+            'unique_id' => $prefix . $this->faker->unique()->regexify('[0-9]{5}'),
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
-            'role' => $this->faker->randomElement(['student', 'teacher', 'admin']),
-            'remember_token' => Str::random(10),
+            'role' => $isTeacher ? 'teacher' : 'student', // Add custom role attribute
         ];
     }
 
@@ -46,6 +48,7 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'role' => 'student',
+                'unique_id' => 'ST' . $this->faker->unique()->regexify('[0-9]{5}'),
             ];
         });
     }
@@ -58,6 +61,7 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'role' => 'teacher',
+                'unique_id' => 'TE' . $this->faker->unique()->regexify('[0-9]{5}'),
             ];
         });
     }
@@ -70,6 +74,7 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'role' => 'admin',
+                'unique_id' => 'AD' . $this->faker->unique()->regexify('[0-9]{5}'),
             ];
         });
     }

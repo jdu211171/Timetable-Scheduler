@@ -35,10 +35,10 @@ class ScheduleSeeder extends Seeder
                 $teacher = $teachers->random();
 
                 // Create 1-3 schedules for each subject for different days
-                $scheduleDays = collect($weekDays)->random(rand(1, 3))->toArray();
+                $scheduleDays = collect($weekDays)->random(rand(1, 3))->unique()->toArray();
 
                 foreach ($scheduleDays as $day) {
-                    Schedule::factory()->create([
+                    $data = [
                         'subject_id' => $subject->id,
                         'user_id' => $teacher->id,
                         'group_id' => $group->id,
@@ -46,7 +46,18 @@ class ScheduleSeeder extends Seeder
                         'pair' => rand(1, 5),
                         'week_day' => $day,
                         'date' => now()->addDays(rand(0, 30))->format('Y-m-d'),
-                    ]);
+                    ];
+
+                    Schedule::firstOrCreate(
+                        [
+                            'subject_id' => $data['subject_id'],
+                            'user_id' => $data['user_id'],
+                            'group_id' => $data['group_id'],
+                            'room_id' => $data['room_id'],
+                            'pair' => $data['pair'],
+                        ],
+                        $data
+                    );
                 }
             }
         }
