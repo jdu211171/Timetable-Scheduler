@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +11,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class SubjectFactory extends Factory
 {
     /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Subject::class;
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -17,7 +25,7 @@ class SubjectFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->unique()->word() . ' ' . $this->faker->randomElement(['101', '202', '303', 'Fundamentals', 'Advanced']),
         ];
     }
 }

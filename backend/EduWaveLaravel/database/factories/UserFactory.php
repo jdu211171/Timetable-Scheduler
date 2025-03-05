@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,9 +13,11 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * The name of the factory's corresponding model.
+     *
+     * @var string
      */
-    protected static ?string $password;
+    protected $model = User::class;
 
     /**
      * Define the model's default state.
@@ -24,24 +27,62 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
-            'unique_id' => fake()->unique()->uuid(),
-            'is_admin' => false,
-            'email' => fake()->unique()->safeEmail(),
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'unique_id' => $this->faker->unique()->regexify('[A-Z]{2}[0-9]{5}'),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('password'),
+            'role' => $this->faker->randomElement(['student', 'teacher', 'admin']),
             'remember_token' => Str::random(10),
         ];
     }
 
     /**
+     * Indicate that the user is a student.
+     */
+    public function student(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'student',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is a teacher.
+     */
+    public function teacher(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'teacher',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => 'admin',
+            ];
+        });
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
-    public function unverified(): static
+    public function unverified(): Factory
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        return $this->state(function (array $attributes) {
+            return [
+                'email_verified_at' => null,
+            ];
+        });
     }
 }

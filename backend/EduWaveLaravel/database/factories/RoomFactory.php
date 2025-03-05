@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Room;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +11,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class RoomFactory extends Factory
 {
     /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Room::class;
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -17,7 +25,7 @@ class RoomFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->unique()->regexify('[A-Z][0-9]{3}'),
         ];
     }
 }
