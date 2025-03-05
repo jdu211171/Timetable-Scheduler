@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Room;
 use Illuminate\Database\Seeder;
 
 class RoomSeeder extends Seeder
@@ -12,6 +12,27 @@ class RoomSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Room::factory(10)->create();
+        // Create predefined rooms
+        $rooms = [
+            'A101',
+            'A102',
+            'B201',
+            'B202',
+            'C301',
+            'C302',
+            'D401',
+            'D402',
+            'LAB101',
+            'LAB102',
+        ];
+
+        foreach ($rooms as $room) {
+            Room::factory()->create([
+                'name' => $room,
+            ]);
+        }
+
+        // Create some random rooms
+        Room::factory()->count(5)->create();
     }
 }
