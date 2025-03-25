@@ -88,22 +88,24 @@ class AuthController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver($provider)->stateless()->user();
-        $fullName = $user->getName();
-        $nameParts = explode(' ', $fullName, 2);
-        $firstName = $nameParts[0] ?? $fullName;
-        $lastName = $nameParts[1] ?? '';
-        $user = User::firstOrCreate([
-            'email' => $user->email
-        ], [
-            'first_name' => $firstName,
-            'last_name' => $lastName,
-            'password' => Hash::make(Str::random(24))
-        ]);
+        $providerUser = Socialite::driver($provider)->stateless()->user();
+        $existingUser = User::where('email', $providerUser->getEmail())->first();
 
-        $token = $user->createToken('API Token')->plainTextToken;
+        if (!$existingUser) {
+            $existingUser = User::create([
+                'first_name' => 'user_'.Str::random(6),
+                'last_name' => '(Google)',
+                'email' => $providerUser->getEmail(),
+                'role' => 'student',
+                'password' => Hash::make(Str::random(16)),
+                // ...other required fields...
+            ]);
+        }
+
+        $token = $existingUser->createToken('API Token')->plainTextToken;
 
         return response()->json(['token' => $token]);
     }
 
 }
+
